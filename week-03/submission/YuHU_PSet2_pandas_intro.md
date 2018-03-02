@@ -83,16 +83,10 @@ After running your code, you should have either a new column in your DataFrame o
 ### Solution
 
 ```python
-for i in range(0,168,24):
-  if i == 0:# consider [163,19) seperately
-    for x in range(163,168):
-      df['hour'].replace(x, x-163,inplace = True)
-    for y in range(0,19):
-      df['hour'].replace(y, y+5, inplace = True)    
-  else:
-    # i = 24,48,72,96,120,144
-    for j in range(i-5,i+19):
-      df['hour'].replace(j, j+5-i, inplace = True)
+for i in range(0, 168, 24):
+  j = range(0,168,1)[i - 5]
+  df['hour'].replace(range(j, j + 5, 1), range(-5, 0, 1), inplace=True)
+  df['hour'].replace(range(i, i + 19, 1), range(0, 19, 1), inplace=True)
 
 df['hour'].unique()
 df.groupby('hour')['count'].sum()
@@ -133,11 +127,10 @@ ac_by_hour.plot.bar()
 Pick three times (or time ranges) and use the latitude and longitude to produce scatterplots of each. In each of these scatterplots, the size of the dot should correspond to the number of GPS pings. Find the [Scatterplot documentation here](http://pandas.pydata.org/pandas-docs/version/0.19.1/visualization.html#scatter-plot). You may also want to look into how to specify a pandas Timestamp (e.g., pd.Timestamp) so that you can write a mask that will filter your DataFrame appropriately. Start with the [Timestamp documentation](https://pandas.pydata.org/pandas-docs/stable/timeseries.html#timestamps-vs-time-spans)!
 
 ```python
-# specify three times on Independence day
-Jul4_12 = df[df['timestamp'] == pd.Timestamp('2017-07-04 12:00:00')]
-Jul4_12['timestamp'].unique()
-Jul4_16 = df[df['timestamp'] == pd.Timestamp('2017-07-04 16:00:00')]
-Jul4_20 = df[df['timestamp'] == pd.Timestamp('2017-07-04 20:00:00')]
+# specify three times (Boston local time 12:00, 16:00, and 20:00) on Independence day
+Jul4_12 = df[df['timestamp'] == pd.Timestamp('2017-07-04 7:00:00')]
+Jul4_16 = df[df['timestamp'] == pd.Timestamp('2017-07-04 11:00:00')]
+Jul4_20 = df[df['timestamp'] == pd.Timestamp('2017-07-04 15:00:00')]
 # Three plots of the corresponding tables
 Jul4_12.plot.scatter(x='lon', y='lat', s=Jul4_12['count']/30)
 Jul4_16.plot.scatter(x='lon', y='lat', s=Jul4_16['count']/30)
@@ -152,7 +145,7 @@ Jul4_20.plot.scatter(x='lon', y='lat', s=Jul4_20['count']/30)
 For three of the visualizations you produced above, write a one or two paragraph analysis that identifies:
 
 1. A phenomenon that the data make visible (for example, how location services are utilized over the course of a day and why this might by).
-   From the scatter plots in problem 6, which form a comparison between 12:00, 16:00, and 20:00 of Independence Day, it is obvious that there are more activities happening during the evening than noon. This is in line with my expectation that the fire work may trigger more activities. In addition, one can see many obvious lines in these plots, my guess is that these are some major roads or streets.
+   From the scatter plots in problem 6, which form a comparison between 12:00, 16:00, and 20:00 of Independence Day(Boston local time), it is obvious that there are more activities happening during the evening than noon. This is in line with my expectation that the fire work may trigger more activities. In addition, one can see many obvious lines in these plots, my guess is that these are some major roads or streets.
 2. A shortcoming in the completeness of the data that becomes obvious when it is visualized.
    I am not sure about the shortcomings in the completeness of this data. But some patterns in the graphs confuse me. From the graphs of problem 4, it seems that from 0 to 4 o'clock, the cell phone activities are extraordinarily high... Also, the graph from problem 1 shows that activities from Jul 24 to Jul 31 are relatively low... These odd phenomenon confuse me and I don't know if they have something to do with the data completeness...
 3. How this data could help us identify vulnerabilities related to climate change in the greater Boston area.
