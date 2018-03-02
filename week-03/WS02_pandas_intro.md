@@ -126,7 +126,7 @@ df['count']
 We can use the `unique()` method to find the unique values in each column. Let's find the unique values in the `cat_name` column.
 
 ```python
-df.lat.unique()
+df.cat_name.unique()
 ```
 
 Now lets get multiple columns:
@@ -151,7 +151,7 @@ To print out the table with only the rows we want, we can apply what is called a
 ```python
 
 time = df[df['hour'] == 158]
-time.head
+time.head()
 time.shape
 ```
 
@@ -160,7 +160,8 @@ We see that we now have a DataFrame containing observations in a single hour, su
 We can query based on multiple criteria using boolean operators (`&` for `and`, `|` for `or`). All we need to do is add `()` brackets around each condition. The query uses a boolean AND. Each condition creates a mask containing `True` and `False` values.
 
 ```python
-df[(df['hour'] == 158) & (df['count'] > 50)]
+s1 = df[(df['hour'] == 158) & (df['count'] > 50)]
+s1.shape
 ```
 
 We've now filtered our dataset substantially: we've limited our results to a single hour and limited our returned cells to those with more than 50 aggregated GPS pings.
@@ -169,14 +170,15 @@ Because this dataset contains every day between July 1 and July 31, we can speci
 
 ```python
 bastille = df[df['date'] == '2017-07-14']
-bastille.head
+bastille.head()
 ```
 
 Now that we're celebrating the abolition of French feudalism, we can see which aggregated cells saw greater than average levels of activity:
 
 ```python
 bastille_enthusiasts = bastille[bastille['count'] > bastille['count'].mean()]
-bastille_enthusiasts.head
+bastille_enthusiasts.head()
+bastille_enthusiasts.shape
 ```
 
 Pandas gives us a simple way to generate summary statistics. The `.describe()` method can be used to return a table that includes the count of non-null rows, their mean, standard deviation, etc.
@@ -238,7 +240,7 @@ df[df['count'] == df['count'].min()]
 Calculate the minimum value and maximum value of the `count` column to find the `hour` with the highest and lowest numbers of GPS pings. You'll want to group by hour.
 
 ```python
-
+df.groupby('hour')
 ```
 
 #### Exercise:
@@ -263,6 +265,7 @@ import matplotlib
 %matplotlib inline
 
 day_hours = df[df['date'] == '2017-07-02'].groupby('hour')['count'].sum()
+day_hours
 day_hours.plot()
 ```
 
@@ -270,12 +273,13 @@ Let's clean the data so that each day contains only those observations that occu
 
 ```python
 df['date_new'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
+df.head()
 ```
 
 What we're doing here is creating a new `date_new` column based on our `date` column using the `.to_datetime()` method. We specify a format that our date is stored in. `%Y-%m-%d` means: year with a century month as a decimal number, and day as a decimal number all separated by hyphens. We can confirm that this is correct by looking at several rows of the DataFrame.
 
 ```python
-df['date'].head
+df['date'].head()
 ```
 
 Once we've created a new column, we can create another column which uses an internal calendar to determine which day a given calendar date lands on. The one quirk here is that, by convention, the `weekday` function returns a numeric value according to a week that runs from 0 to 6 where 0 is Monday. Our 0 hour is midnight on Sunday, so we'll need to make our weekday number match our `hours` column. We do this using the `.apply() method`.
@@ -283,6 +287,7 @@ Once we've created a new column, we can create another column which uses an inte
 ```python
 df['weekday'] = df['date_new'].apply(lambda x: x.weekday() + 1)
 df['weekday'].replace(7, 0, inplace = True)
+df.head()
 ```
 
 `lambda` sounds complicated, but really isn't. It allows us to define a function on the fly---here we're saying "do the following for every row: identify a weekday and add one to the returned value." This results in a range from 1-7 and we still want it to range from 0 to 6, so we replace 7 with 0 using the built-in Pandas `.replace` method.
@@ -309,7 +314,9 @@ for i in range(0, 168, 24):
     )
     ].index, inplace = True)
 ```
-
+```python
+range(0,168,1)
+```
 This looks complicated, but let's break it down. We're running a loop which iterates over a range from 0 to 168, exclusive, using steps of 24. In other words, we're iterating over a week's worth of hours, day-by-day.
 
 But there's a trick. It turns out that these times are logged using Greenwich Mean Time, meaning that Boston is 5 hours behind. This poses a problem when we're dealing with the first day of the week: there are five hours that wrap around the break in the array, occupying elements 163 - 167. If we simply subtract from our `i` value, we'll get negative values; the `hours` column contains no negative values. We therefore create a second range from 0-168 with one-step intervals, which permits us to use those negative numbers to access later elements in the `range`.
