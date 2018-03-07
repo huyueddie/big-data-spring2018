@@ -1,6 +1,10 @@
 # Supplementary Skill: Web Scraping Using Beautiful Soup
 
+<<<<<<< HEAD
 Let's scrape some data using a fun library called Beautiful Soup. We'll create a CSV dataset by scraping a table on 311 reported Rodent Incidents around Boston, hosted [here](http://duspviz.mit.edu/_assets/data/sample.html).
+=======
+Let's scrape some data from a web page using a library called Beautiful Soup. We'll create a CSV dataset by scraping a table on 311 reported Rodent Incidents around Boston, hosted [here](http://duspviz.mit.edu/_assets/data/sample.html).
+>>>>>>> class/master
 
 Let's get started!
 
@@ -16,7 +20,11 @@ import bs4
 
 ## Requests
 
+<<<<<<< HEAD
 Requests will allow us to load a webpage into python so that we can parse it and manipulate it. Test this by running the following. I am using a really simple page from the Beautiful Soup documentation to explain what is happening here. Enter the following commands in terminal, and hit enter after entering each to run each of them.
+=======
+Requests will allow us to load a webpage into python so that we can parse it and manipulate it. Test this by running the following. I am using a really simple page from the Beautiful Soup documentation to explain what is happening here. Enter the following commands in a new python document and run them.
+>>>>>>> class/master
 
 
 ```python
@@ -28,7 +36,11 @@ This allowed us to access all of the content from the source code of the webpage
 
 ## Beautiful Soup
 
+<<<<<<< HEAD
 Beautiful Soup is a Python library for parsing data out of HTML and XML files (for example, webpages). It provides idiomatic ways of navigating, searching, and modifying the parse tree. Beautiful Soup's central functionality is that it allows you to access elements of your page by following paths through a structured document; for example, this will allow you to easily grab all links, all headers, or every instance of a specific class.
+=======
+Beautiful Soup is a Python library for parsing data out of HTML and XML files (for example, webpages)---as always, you should [consult the documentation for more detailed information](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)! It provides idiomatic ways of navigating, searching, and modifying the parse tree. Beautiful Soup's central functionality is that it allows you to access elements of your page by following paths through a structured document; for example, this will allow you to easily grab all links, all headers, or every instance of a specific class.
+>>>>>>> class/master
 
 Once we've selected elements and structured them, Python makes it easy to write these into portable file formats such as a CSV.
 
@@ -168,7 +180,11 @@ data = soup.findAll(attrs={'class':['city','number']})
 print(data)
 ```
 
+<<<<<<< HEAD
 Run this using Hydrogen, or using `python` in the terminal. You should see an array with our data elements nested within tags. Nice!
+=======
+Run this using Hydrogen within Atom. You should see an array with our data elements nested within tags.
+>>>>>>> class/master
 
 ## Write data to a file using a simple loop
 
