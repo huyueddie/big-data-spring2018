@@ -14,8 +14,6 @@ Create a project homepage on your Github site that you will use to host your pro
 
 You should put your midterm presentation on your website as a showcase of what your project will be and do.
 
-Also, develop a base level branding (project name, logo, font, and color scheme) for your team and project. Customize your website by changing fonts, colors, and images that go with your project.
-
 On your website:
 
 1. Include your branding in your design
@@ -26,7 +24,7 @@ You just need one website per project group.
 
 ### Some suggestions
 
-Use a template like [Bootstrap](http://duspviz.mit.edu/web-map-workshop/bootstrap-templates/) or [HTML5UP](https://html5up.net/) in your page customization. If you use Bootstrap, there tutorial at this link shows you [how to get started with customizing Bootstrap](http://duspviz.mit.edu/web-map-workshop/bootstrap-templates/). You can find free Bootstrap templates at [http://startbootstrap.com](http://startbootstrap.com/).
+Use a template like [Bootstrap](http://duspviz.mit.edu/web-map-workshop/bootstrap-templates/) in your page customization. Check out this DUSPViz tutorial that will walk you through [how to get started with customizing Bootstrap](http://duspviz.mit.edu/web-map-workshop/bootstrap-templates/). You can find free Bootstrap templates at [http://startbootstrap.com](http://startbootstrap.com/).
 
 Use a template like a [Bootstrap Carousel](https://www.w3schools.com/bootstrap/bootstrap_carousel.asp) to show your slides.
 
