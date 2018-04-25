@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Part 3: Add a Legend</title>
+	<script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+	<script src="https://d3js.org/d3-queue.v2.min.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+</head>
+<body>
+	<!-- Page elements and content go here. -->
+	<script>
+		// Our D3 code will go here.
+    var width = 720;
+    var height = 580;
+
+    var projection = d3.geoAlbers()
+        .scale(190000)
+        .rotate( [71.057,0] )
+        .center( [0, 42.313] )
+        .translate([width / 2, height / 2]);
+
+    var path = d3.geoPath()
+        .projection(projection);
+
+    var svg = d3.select("body").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+
+    var color = d3.scaleThreshold()
+        .domain([0.0, 0.1, 0.2, 0.3,  0.4])
+        .range(d3.schemeBlues[5]);
+
+      // Create Tooltip and set it to be hidden
+    var tooltip = d3.select("body")
+    	.append("div")
+    	.style("position", "absolute")
+    	.style("font-family", "'Open Sans', sans-serif")
+    	.style("font-size", "12px")
+    	.style("z-index", "10")
+    	.style("visibility", "hidden")
+      .style("background-color", "white")
+      .style("opacity","0.7")
+      .style("padding", "5px");
+
+    var x = d3.scaleLinear()
+        .domain([0.0, 0.4])
+        .rangeRound([55, 250]);
+
+    var g = svg.append("g")
+        .attr("class", "rate")
+        .attr("transform", "translate(0,40)");
+
+
+    // Queue up datasets using d3 Queue
+    d3.queue()
+        .defer(d3.json, "boston_neigh.json") // Load Boston neighorboods
+        .defer(d3.csv, "twit_pct.csv")
+        .await(ready); // Run 'ready' when JSONs are loaded
+
+    // Ready Function, runs when data is loaded
+    function ready(error, neigh, twit) {
+      if (error) throw error;
+
+      var rateById = {}; // Create empty object for holding dataset
+      twit.forEach(function(d) {
+        rateById[d.id] = +d.rate; // Create property for each ID, give it value from twit_pct
+
+      });
+      console.log(rateById)
+
+      svg.append("g")
+          .attr("class", "neighorboods")
+          .selectAll("path")
+          .data(topojson.feature(neigh, neigh.objects.boston_neigh).features) // Bind TopoJSON data elements
+          .enter().append("path")
+          .attr("d", path)
+          .style("fill", function(a) {
+            return color(rateById[a.properties["OBJECTID"]]);
+          })
+          .style("stroke", "white")
+          .on("mouseover", function(d){
+        		return tooltip.style("visibility", "visible").text(d.properties["Name"] + ": " + rateById[d.properties["OBJECTID"]] + "%");
+        	})
+        	.on("mousemove", function(d){
+        		return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px").text(d.properties["Name"] + ": " + rateById[d.properties["OBJECTID"]] + "%");
+        	})
+        	.on("mouseout", function(d){
+        		return tooltip.style("visibility", "hidden");
+        	});
+    }
+
+      g.selectAll("rect")
+        .data(color.range().map(function(d) {
+            d = color.invertExtent(d);
+            if (d[0] == null) d[0] = x.domain()[0];
+            if (d[1] == null) d[1] = x.domain()[1];
+            return d;
+          }))
+        .enter().append("rect")
+          .attr("height", 9)
+          .attr("x", function(d) { return x(d[0]); })
+          .attr("width", function(d) { return x(d[1]) - x(d[0]); })
+          .attr("fill", function(d) { return color(d[0]); });
+
+      g.append("text")
+          .attr("class", "caption")
+          .attr("x", x.range()[0])
+          .attr("y", -6)
+          .attr("fill", "#000")
+          .attr("text-anchor", "start")
+          .attr("font-weight", "bold")
+          .text("% of 311 Requests from Twitter");
+
+      g.call(d3.axisBottom(x)
+          .tickSize(13)
+          .tickFormat(function(x, i) { return i ? x : x + "%"; })
+          .tickValues(color.domain()))
+        .select(".domain")
+          .remove();
+
+	</script>
+</body>
+</html>
